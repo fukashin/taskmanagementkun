@@ -65,7 +65,7 @@ const TasksView: React.FC = () => {
     <tr key={index} onClick={() => navigate(`/Tasks/${task.task_id}`)}>  {/* Make the row clickable */}
       <td>{task.task_id}</td>
       <td>
-      {task.task_id}
+      {task.name}
       </td>
       <td>{task.kind}</td>
       <td>{task.importance === "3" ? "大" : task.importance === "2" ? "中" : "小"}</td>

@@ -2,6 +2,8 @@
 import axios from 'axios';
 import { Comment } from '../domain/models/Comment';
 import { Task} from '../domain/models/models';
+import { AxiosResponse } from 'axios';
+
 
 const API_BASE_URL = 'http://localhost:8000';
 
@@ -33,6 +35,40 @@ export const fetchTask = async (task_id: number): Promise<Task> => {
 };
 
 
+export const createUsre = async  (username: string, email: string, password: string): Promise<Comment> => {
+  const response = await axios.post(`${API_BASE_URL}/signup/`, {username:username,email:email,password:password,}); 
+  return response.data;
+};
+
+// 他の定義の後に追加
+interface SignInResponse {
+  token: string;
+}
+
+// getUsre関数の定義
+export async function getUsre(username: string, password: string): Promise<SignInResponse> {
+  const response: AxiosResponse<SignInResponse> = await axios.post(`${API_BASE_URL}/signin/`, {
+    username,
+    password,
+  });
+  return response.data;
+}
+
+export const getUserInfo = async (token: string): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/user_info/`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Token ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch user information');
+  }
+
+  return await response.json();
+};
 
 
 //export default api;

@@ -1,0 +1,19 @@
+
+/* App.css */
+
+nav a {
+    transition: transform 0.3s ease-in-out;
+    display: inline-block;
+    margin-right: 10px;
+    color: #ffffff; /* 文字色を白に変更 */
+    text-decoration: none; /* 下線を削除 */
+    border: 2px solid #ffffff; /* 枠線を追加（白色） */
+    padding: 5px 10px; /* パディングを追加 */
+    background-color: #596feb; /* 背景色を黒に設定 */
+    border-radius: 15px;
+  }
+  
+  nav a:hover {
+    transform: scale(1.5);
+  }
+  

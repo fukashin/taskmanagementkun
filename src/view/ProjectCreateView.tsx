@@ -3,7 +3,7 @@ import React, { useState } from 'react'; // ReactとuseStateフック（ロー�
 import {createTask} from '../services/apiService'; // apiServiceからcreateTask関数をインポート
 // 必要なフックをインポートします
 import { useNavigate } from "react-router-dom";
-import { Form, FormGroup, Row, Col, Button, Alert } from 'react-bootstrap';
+import { Form, FormGroup, Row, Button, Alert } from 'react-bootstrap';
 
 
 // このコンポーネントが期待するプロパティを定義
