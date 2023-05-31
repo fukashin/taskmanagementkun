@@ -70,5 +70,22 @@ export const getUserInfo = async (token: string): Promise<any> => {
   return await response.json();
 };
 
+export async function getKinds() {
+  const response = await fetch('/api/kinds/');
+  const data = await response.json();
+  return data;
+}
+
+export async function createKind(name:string) {
+  const response = await fetch('/api/kinds/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name }),
+  });
+  const data = await response.json();
+  return data;
+}
+
+
 
 //export default api;

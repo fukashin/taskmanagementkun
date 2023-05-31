@@ -1,53 +1,65 @@
 // ProjectForm.tsx
-import React, { useState } from 'react'; // ReactとuseStateフック（ローカルステートを管理するため）をインポート
-import {createTask} from '../services/apiService'; // apiServiceからcreateTask関数をインポート
-// 必要なフックをインポートします
+import React, { useState, useEffect } from 'react';
+import { createTask, getUserInfo, getKinds, createKind } from '../services/apiService';
 import { useNavigate } from "react-router-dom";
 import { Form, FormGroup, Row, Button, Alert } from 'react-bootstrap';
+import Select from 'react-select';
 
-
-// このコンポーネントが期待するプロパティを定義
-
-
-// Reactの関数型コンポーネント。ProjectFormProps型のpropsを引数に取ります。
 const ProjectForm: React.FC = () => {
-
   const navigate = useNavigate();
   
-  // useStateの引数に`null`ではなく`string | null`という型を指定します
   const [error, setError] = useState<string | null>(null);
-  // useStateフックを使用して各入力フィールドのローカルステートを管理
-  const [name, setName] = useState(""); // タスク名
-  const [dueDate, setDueDate] = useState(""); // 終了予定日
-  const [creator, setCreator] = useState(""); // タスク作成者
-  const [assignee, setAssignee] = useState(""); // タスク実行者
-  const [status, setStatus] = useState("O"); // ステータス（初期値は'O'）
+  const [name, setName] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [creator, setCreator] = useState("");
+  const [assignee, setAssignee] = useState("");
+  const [status, setStatus] = useState("O");
   const [importance, setimportance] = useState("2");
-  const [kind, setkind] = useState("");
+  const [kind, setKind] = useState<{value: string, label: string} | null>(null);
+  const [kindOptions, setKindOptions] = useState<{value: string, label: string}[]>([]);  // to hold our fetched kind options
 
-  // フォームが送信されたときに実行される関数
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const data = await getUserInfo(token);
+        setCreator(data.username);
+      }
+    };
+
+    const fetchKinds = async () => {
+      const kinds: string[] = await getKinds(); // Specify the type of 'kinds' as string array
+      const formattedKinds = kinds.map((kind: string) => ({value: kind, label: kind})); // Specify the type of 'kind' as string
+      setKindOptions(formattedKinds);
+    }
+
+    fetchUserInfo();
+    fetchKinds();
+  }, []);
+
   const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault(); // フォームのデフォルトの送信動作を防ぐ
+    event.preventDefault();
     
-    // due_dateを文字列からDateオブジェクトに変換
     const dueDateObj = new Date(dueDate);
     
     try {
-      // DjangoバックエンドへのPOSTリクエストを送信
-      await createTask(name, dueDateObj, creator, assignee, status, importance, kind);
-      
-      // 入力フィールドをクリア
+      // If the kind is not in the options list, we try to create it
+      if (kind && !kindOptions.some(option => option.value === kind.value)) {
+        const newKind = await createKind(kind.value);
+        setKindOptions([...kindOptions, {value: newKind, label: newKind}]);  // we add it to our kind options
+      }
+
+      await createTask(name, dueDateObj, creator, assignee, status, importance, kind ? kind.value : '');
+
       setName("");
       setDueDate("");
       setCreator("");
       setAssignee("");
       setStatus("O");
-      setkind("");
+      setKind(null);
 
-      // 成功した場合はユーザーを元のページにリダイレクトします
       navigate("/");
     } catch (error) {
-      // エラーが発生した場合はエラーメッセージを設定します
       setError("すべての項目を入力してください");
     }
   };
@@ -64,14 +76,15 @@ const ProjectForm: React.FC = () => {
             placeholder="タスク名"
             onChange={e => setName(e.target.value)}
           />
-        </FormGroup>
-        <FormGroup className="col-md-6">
+          </FormGroup>
+          <FormGroup className="col-md-6">
           <Form.Label>タスクの種類</Form.Label>
-          <Form.Control
-            type="text"
+          <Select
             value={kind}
-            placeholder="タスクの種類"
-            onChange={e => setkind(e.target.value)}
+            onChange={value => setKind(value)}
+            options={kindOptions}  // use the fetched kind options
+            isClearable
+            isSearchable
           />
         </FormGroup>
       </Row>
