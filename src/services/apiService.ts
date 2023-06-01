@@ -70,22 +70,18 @@ export const getUserInfo = async (token: string): Promise<any> => {
   return await response.json();
 };
 
-export async function getKinds() {
-  const response = await fetch('/api/kinds/');
-  const data = await response.json();
-  return data;
-}
 
-export async function createKind(name:string) {
-  const response = await fetch('/api/kinds/', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name }),
-  });
-  const data = await response.json();
-  return data;
-}
+// APIから種類を取得する関数
+export const getKinds = async (): Promise<{value: string, label: string}[]> => {
+  const response = await axios.get(`${API_BASE_URL}/kinds/`);
+  return response.data;
+};
 
+// 新しい種類をAPIに作成する関数
+export const createKind = async (name:string): Promise<string> => {
+  const response = await axios.post(`${API_BASE_URL}/kinds_create/`, { 'kind':name });
+  return response.data;
+};
 
 
 //export default api;
