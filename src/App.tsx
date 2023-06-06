@@ -7,6 +7,7 @@ import Task from './view/TaskDetailView';
 import Signup from './view/components/Signup';
 import Signin from './view/components/Signin';
 import MyPage from './view/components/MyPage';
+import GanttChartComponent from './view/components/Ganttchartcomp'
 import './App.css'; 
 
 const App: React.FC = () => {
@@ -19,6 +20,7 @@ const App: React.FC = () => {
         {/* ナビゲーション */}
         <nav>
           <Link to="/">Home</Link>
+          <Link to="/chartt">ガントチャート</Link>
           <Link to="/signup">アカウント作成</Link>
           <Link to="/signin">ログイン</Link>
           <Link to="/MyPage">マイページ</Link>
@@ -29,6 +31,8 @@ const App: React.FC = () => {
       <Routes>
       {/* ルートに対応するコンポーネントを表示 */}
       <Route path="/" element={<ProjectsView/>}/>
+      {/* ガントチャートのページ */}
+      <Route path="/chartt" element={<GanttChartComponent/>}/>
       {/* タスク作成ページ*/}
       <Route path='/createTask' element={<ProjectForm />}/>
       {/* 個別のスレッドページ */}

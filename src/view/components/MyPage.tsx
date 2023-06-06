@@ -1,7 +1,7 @@
 // MyPage.tsx
 
 import React, { useState, useEffect } from 'react';
-import { getUserInfo } from '../../services/apiService';
+import { getUserInfoWithToken} from '../../services/apiService';
 import Logout from './Logout'; // ログアウトコンポーネントをインポート
 
 const MyPage: React.FC = () => {
@@ -10,24 +10,18 @@ const MyPage: React.FC = () => {
   useEffect(() => {
     // fetchData 関数を定義して、トークンを使ってユーザー情報を取得する
     const fetchData = async () => {
-      // ローカルストレージからトークンを取得
-      const token = localStorage.getItem('token');
-      
-      // トークンが存在する場合
-      if (token) {
-        try {
-          // トークンを使って API からユーザー情報を取得
-          const data = await getUserInfo(token);
+      try {
+        // getUserInfoWithTokenを呼び出してユーザー情報を取得
+        const data = await getUserInfoWithToken();
           
-          // 取得したユーザー情報をステートにセット
-          setUserInfo(data);
-        } catch (error) {
-          // エラーが発生した場合、コンソールにエラーを出力
-          console.error(error);
-        }
+        // 取得したユーザー情報をステートにセット
+        setUserInfo(data);
+      } catch (error) {
+        // エラーが発生した場合、コンソールにエラーを出力
+        console.error(error);
       }
     };
-
+    
     // fetchData 関数を呼び出し
     fetchData();
   }, []);

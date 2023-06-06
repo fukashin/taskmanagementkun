@@ -1,0 +1,103 @@
+import React, { useEffect, useState } from "react";
+import { Gantt, Task as GanttTask } from "gantt-task-react";
+import "gantt-task-react/dist/index.css";
+import { getTasks} from '../../services/apiService';  // getTasksとTaskのインポート
+import { Task } from '../../domain/models/models'; 
+const GanttChartComponent: React.FC = () => {
+  const dummyTask: GanttTask[] = {
+    id: '0',
+    name: 'Loading...',
+    start: new Date(2023, 4, 19),
+    end: new Date(2023, 4, 31),
+    progress: 0,
+    type: 'task',
+  };
+
+  const [tasks, setTasks] = useState<GanttTask[]>(dummyTask);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      const tasksData = await getTasks('current_time');
+      
+      const tasksForGanttChart = tasksData.map((task: Task) => ({
+        id: String(task.task_id),
+        name: task.name,
+        type: 'task',
+        start: new Date(task.current_time),
+        end: new Date(task.due_date),
+        progress: 50,
+      }));
+
+      setTasks(tasksForGanttChart);
+    };
+
+    fetchTasks();
+  }, []);
+
+  return (
+    <div>
+      <Gantt
+        tasks={tasks}
+        // 他のプロパティも必要に応じて追加してください
+      />
+    </div>
+  );
+};
+
+export default GanttChartComponent;
+
+
+
+import React, { useState, useEffect } from "react";
+import { Gantt, Task as GanttTask } from "gantt-task-react";
+import "gantt-task-react/dist/index.css";
+
+const GanttChartComponent: React.FC = () => {
+  // サンプルのタスクデータ
+  const sampleTasks: GanttTask[] = [
+    {
+      id: "1",
+      name: "タスク1",
+      start: new Date(2023, 4, 19), // 月は0から始まるため、5月は4
+      end: new Date(2023, 4, 31),
+      progress: 50,
+      type: "task"
+    },
+    {
+      id: "2",
+      name: "タスク2",
+      start: new Date(2023, 4, 20),
+      end: new Date(2023, 4, 25),
+      progress: 70,
+      type: "task"
+    },
+    // 他のタスクデータも必要に応じて追加
+  ];
+
+  const [tasks, setTasks] = useState<GanttTask[]>(sampleTasks);
+
+  useEffect(() => {
+    setTasks(sampleTasks); // useEffect内でサンプルタスクを設定
+  }, []);
+
+  return (
+    <div>
+      <Gantt
+        tasks={tasks}
+        // 他のプロパティも必要に応じて追加してください
+      />
+    </div>
+  );
+};
+
+export default GanttChartComponent;
+
+
+  // ガントチャートから、タスクの「開始日付」「完了日付」を調整した場合、変更された日付をレコードに更新する
+  const onTaskChange = (task: Task) => {
+    const start = new Date(task.start.getTime() - task.start.getTimezoneOffset() * 60 * 1000)
+      .toISOString()
+      .split('T')[0]
+    const end = new Date(task.end.getTime() - task.end.getTimezoneOffset() * 60 * 1000).toISOString().split('T')[0]
+    updateDate(task.id, start, end)
+  }

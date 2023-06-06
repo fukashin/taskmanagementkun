@@ -1,5 +1,5 @@
 // models.ts
-export interface Task {
+export interface Task2 {
     task_id: number;
     name: string;
     kind: string;

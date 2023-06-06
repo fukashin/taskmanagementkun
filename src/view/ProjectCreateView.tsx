@@ -13,6 +13,7 @@ const ProjectForm: React.FC = () => {
   // フォームの各フィールドのデータを保存するための状態（useStateを使用）を作成します。
   const [error, setError] = useState<string | null>(null);
   const [name, setName] = useState("");
+  const [startDate, setStartDate] = useState("");  // 新たに開始予定日の状態を作成
   const [dueDate, setDueDate] = useState("");
   const [creator, setCreator] = useState("");
   const [assignee, setAssignee] = useState("");
@@ -48,8 +49,13 @@ const ProjectForm: React.FC = () => {
   // フォームの送信ハンドラーを定義します。これはフォームが送信された時に実行される関数です
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    
+
+    const startDateObj = new Date(startDate);
     const dueDateObj = new Date(dueDate);
+    if (dueDateObj <= startDateObj) {  // 終了予定日が開始予定日よりも前または同じ場合、エラーメッセージを表示して関数を終了
+      setError("終了予定日は開始予定日より後にしてください");
+      return;
+    }
     
     try {
       // タスクの種類がオプションリストにない場合、新しく作成します
@@ -59,7 +65,7 @@ const ProjectForm: React.FC = () => {
         setKindOptions([...kindOptions, kind]);  // 新しいタスクの種類をオプションに追加します
       }
       // タスクを作成します
-      await createTask(name, dueDateObj, creator, assignee, status, importance, kind ? kind.value : '');
+      await createTask(name, startDateObj,dueDateObj, creator, assignee, status, importance, kind ? kind.value : '');
 
       // フォームフィールドをクリアします
       setName("");
@@ -68,6 +74,7 @@ const ProjectForm: React.FC = () => {
       setAssignee("");
       setStatus("O");
       setKind(null);
+      setStartDate("");  // 開始予定日をクリア
 
       // ホームページに戻ります
       navigate("/");
@@ -119,18 +126,16 @@ const ProjectForm: React.FC = () => {
           </FormGroup>
       </Row>
       <Row>
+        {/* 新たに開始予定日の入力フィールドを追加 */}
         <FormGroup className="col-md-6">
-          <Form.Label>重要度</Form.Label>
+          <Form.Label>開始予定日</Form.Label>
           <Form.Control
-            as="select"
-            value={importance}
-            onChange={e => setimportance(e.target.value)}
-          >
-            <option value="3">大</option>
-            <option value="2">中</option>
-            <option value="1">小</option>
-          </Form.Control>
+            type="datetime-local"
+            value={startDate}
+            onChange={e => setStartDate(e.target.value)}
+          />
         </FormGroup>
+        
         <FormGroup className="col-md-6">
           <Form.Label>終了予定日</Form.Label>
           <Form.Control
@@ -170,6 +175,18 @@ const ProjectForm: React.FC = () => {
           >
             <option value="O">Open</option>
             <option value="C">Closed</option>
+          </Form.Control>
+        </FormGroup>
+        <FormGroup className="col-md-6">
+          <Form.Label>重要度</Form.Label>
+          <Form.Control
+            as="select"
+            value={importance}
+            onChange={e => setimportance(e.target.value)}
+          >
+            <option value="3">大</option>
+            <option value="2">中</option>
+            <option value="1">小</option>
           </Form.Control>
         </FormGroup>
       </Row>
