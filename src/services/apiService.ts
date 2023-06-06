@@ -6,7 +6,7 @@ import { AxiosResponse } from 'axios';
 
 
 //const API_BASE_URL = 'http://localhost:8000';
-const API_BASE_URL = 'http://54.95.89.161:8000';
+const API_BASE_URL = 'http://13.231.217.174:8000';
 
 
 export const createTask = async (name:string ,current_time:Date,due_date:Date ,creator:string, assignee:string, status:string,importance:string,kind:string) => {
