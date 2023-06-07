@@ -5,8 +5,8 @@ import { Task2} from '../domain/models/models';
 import { AxiosResponse } from 'axios';
 
 
-//const API_BASE_URL = 'http://localhost:8000';
-const API_BASE_URL = 'http://172.31.3.68:8000';
+const API_BASE_URL = 'http://localhost:8000';
+//const API_BASE_URL = 'http://あなたのec2のパブリックIPアドレス:8000';
 
 
 export const createTask = async (name:string ,current_time:Date,due_date:Date ,creator:string, assignee:string, status:string,importance:string,kind:string) => {
