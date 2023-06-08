@@ -1,5 +1,6 @@
 # プロジェクト管理ツールです
-![名称未設定](https://github.com/fukashin/taskmanagementkun/assets/55280398/856c900b-a6f4-4796-b21f-375afacb8d58)
+![ezgif com-video-to-gif](https://github.com/fukashin/taskmanagementkun/assets/55280398/f66ca388-17a0-4476-b42b-16e43250c923)
+
 
 ## バックエンドに別のリポジトリのdjangoを使用しているのでそれを一緒に立ち上げると使用できます。
 
